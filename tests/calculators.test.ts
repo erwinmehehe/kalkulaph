@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import rates from '../src/data/rates-2026.json';
-import { annualTax, employeeContributions, finalPayEstimate, freelancerTax, holidayPay, maternityEstimate, mp2Projection, netPay, overtimePay, pensionEstimate, rateConversions, retirementProjection, thirteenthMonthAndBenefits } from '../src/lib/calculators';
+import { annualTax, clamp, employeeContributions, finalPayEstimate, freelancerTax, holidayPay, maternityEstimate, mp2Projection, netPay, overtimePay, pensionEstimate, rateConversions, retirementProjection, thirteenthMonthAndBenefits } from '../src/lib/calculators';
 const r = rates as any;
 test('annual TRAIN tax brackets',()=>{assert.equal(annualTax(250000,r),0);assert.equal(annualTax(400000,r),22500);assert.equal(annualTax(800000,r),102500)});
 test('contributions respect caps',()=>{const x=employeeContributions(200000,r);assert.equal(x.sss,1750);assert.equal(x.philHealth,2500);assert.equal(x.pagIbig,200)});
@@ -16,3 +16,7 @@ test('overtime and holiday pay use explicit multipliers',()=>{assert.ok(overtime
 test('final pay itemizes prorated components',()=>{const x=finalPayEstimate(15000,120000,5,30000);assert.equal(x.proratedThirteenth,10000);assert.ok(x.total>25000)});
 test('MP2 projection includes deposits and dividends',()=>{assert.ok(mp2Projection(1000,5)>60000)});
 test('maternity benefit derives ADSC from six MSCs',()=>{const x=maternityEstimate(120000,105);assert.equal(x.averageDailySalaryCredit,120000/180);assert.equal(x.benefit,x.averageDailySalaryCredit*105)});
+test('zero salary produces zero deductions and take-home',()=>{const c=employeeContributions(0,r);const x=netPay(0,r);assert.deepEqual(c,{sss:0,philHealth:0,pagIbig:0,total:0});assert.equal(x.net,0);assert.equal(x.tax,0)});
+test('decimal salary stays finite and bounded',()=>{const x=netPay(43210.75,r,1234.5);assert.ok(Number.isFinite(x.net));assert.ok(Number.isFinite(x.tax));assert.ok(x.net>=0&&x.net<=43210.75)});
+test('large finite salary respects statutory contribution caps',()=>{const x=employeeContributions(1_000_000_000,r);assert.equal(x.sss,1750);assert.equal(x.philHealth,2500);assert.equal(x.pagIbig,200);assert.ok(Number.isFinite(x.total))});
+test('numeric clamp safely normalizes malformed non-finite values',()=>{assert.equal(clamp(Number.NaN,0,100),0);assert.equal(clamp(Number.POSITIVE_INFINITY,0,100),0);assert.equal(clamp(Number.NEGATIVE_INFINITY,0,100),0)});
