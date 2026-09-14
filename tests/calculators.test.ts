@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import rates from '../src/data/rates-2025.json';
+import rates from '../src/data/rates-2026.json';
 import { annualTax, employeeContributions, finalPayEstimate, freelancerTax, holidayPay, maternityEstimate, mp2Projection, netPay, overtimePay, pensionEstimate, rateConversions, retirementProjection, thirteenthMonthAndBenefits } from '../src/lib/calculators';
 const r = rates as any;
 test('annual TRAIN tax brackets',()=>{assert.equal(annualTax(250000,r),0);assert.equal(annualTax(400000,r),22500);assert.equal(annualTax(800000,r),102500)});
 test('contributions respect caps',()=>{const x=employeeContributions(200000,r);assert.equal(x.sss,1750);assert.equal(x.philHealth,2500);assert.equal(x.pagIbig,200)});
+test('PhilHealth can use monthly basic salary instead of total gross',()=>{const x=employeeContributions(50000,r,30000);assert.equal(x.philHealth,750)});
 test('net pay never exceeds gross',()=>{const x=netPay(50000,r);assert.ok(x.net>0&&x.net<50000)});
 test('8 percent freelancer exemption',()=>{assert.equal(freelancerTax(250000,0,'eightPercent',r).incomeTax,0);assert.equal(freelancerTax(500000,0,'eightPercent',r).incomeTax,20000)});
 test('13th month is one twelfth basic earned',()=>{assert.equal(thirteenthMonthAndBenefits(600000,{},r).thirteenthMonth,50000)});
