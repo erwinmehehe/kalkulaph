@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "KalkulaPH",
+    "slug": "kalkulaph",
+    "version": "3.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "android": { "package": "ph.kalkula.app", "versionCode": 12 },
+    "ios": { "bundleIdentifier": "ph.kalkula.app", "buildNumber": "12" },
+    "extra": { "ratesUrl": "https://raw.githubusercontent.com/erwinmehehe/kalkulaph/main/src/data/rates-2025.json" }
+  }
+}
