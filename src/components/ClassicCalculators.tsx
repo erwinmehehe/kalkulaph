@@ -16,33 +16,33 @@ const tools: Array<[Tool,string,string,keyof typeof Ionicons.glyphMap]> = [
   ['contributions','Contribution breakdown','Employee and total deductions','business-outline']
 ];
 const num=(v:string)=>Number(v.replace(/,/g,''))||0;
-function Input({label,value,setValue}:{label:string;value:string;setValue:(v:string)=>void}){return <View style={s.field}><Text style={s.label}>{label}</Text><View style={s.inputRow}><Text style={s.prefix}>₱</Text><TextInput value={value} onChangeText={setValue} keyboardType="decimal-pad" placeholder="0" placeholderTextColor="#98A2B3" style={s.input}/></View></View>}
-function Result({label,value,detail}:{label:string;value:string;detail?:string}){return <View style={s.result}><Text style={s.resultLabel}>{label}</Text><Text style={s.resultValue}>{value}</Text>{detail?<Text style={s.detail}>{detail}</Text>:null}</View>}
+function Input({label,value,setValue,moneyField=true}:{label:string;value:string;setValue:(v:string)=>void;moneyField?:boolean}){return <View style={s.field}><Text style={s.label}>{label}</Text><View style={s.inputRow}>{moneyField?<Text style={s.prefix}>₱</Text>:null}<TextInput value={value} onChangeText={setValue} keyboardType="decimal-pad" placeholder="0" placeholderTextColor="#98A2B3" style={s.input} accessibilityLabel={label}/></View></View>}
+function Result({label,value,detail}:{label:string;value:string;detail?:string}){return <View style={s.result}><Text style={s.resultLabel}>{label}</Text><Text style={s.resultValue} adjustsFontSizeToFit numberOfLines={1} minimumFontScale={0.65}>{value}</Text>{detail?<Text style={s.detail}>{detail}</Text>:null}</View>}
 
 export function ClassicCalculators({rates,back}:{rates:RateConfig;back:()=>void}){
- const [tool,setTool]=useState<Tool|null>(null);const [a,setA]=useState('');const [b,setB]=useState('');const [c,setC]=useState('');
- const reset=(next:Tool|null)=>{setTool(next);setA('');setB('');setC('')};
+ const [tool,setTool]=useState<Tool|null>(null);const [a,setA]=useState('');const [b,setB]=useState('');const [c,setC]=useState('');const [d,setD]=useState('');
+ const reset=(next:Tool|null)=>{setTool(next);setA('');setB('');setC('');setD('')};
  const output=useMemo(()=>{
   if(!tool)return null;
   if(tool==='rates'){const x=rateConversions(num(a));return ['Estimated daily rate',money(x.daily),`Hourly rate: ${money(x.hourly)}`]}
   if(tool==='overtime')return ['Estimated overtime pay',money(overtimePay(num(a),num(b))),`${b||0} hour(s) at 125% of estimated hourly rate`];
-  if(tool==='holiday')return ['Estimated additional pay',money(holidayPay(num(a),num(b),(c==='rest'?1.3:2))),c==='rest'?'Rest-day estimate at 130%':'Regular-holiday estimate at 200%'];
-  if(tool==='final'){const x=finalPayEstimate(num(a),num(b),num(c),num(a));return ['Estimated final pay',money(x.total),`Includes ${money(x.proratedThirteenth)} prorated 13th month and ${money(x.leaveConversion)} leave conversion`];}
+  if(tool==='holiday')return ['Estimated pay for days entered',money(holidayPay(num(a),num(b),(c==='rest'?1.3:2))),c==='rest'?'Rest-day estimate at 130%':'Regular-holiday estimate at 200%'];
+  if(tool==='final'){const x=finalPayEstimate(num(a),num(b),num(c),num(d));return ['Estimated final pay',money(x.total),`Includes ${money(x.proratedThirteenth)} prorated 13th month and ${money(x.leaveConversion)} leave conversion`];}
   if(tool==='minimum'){const daily=num(a),days=num(b)||26;return ['Monthly wage equivalent',money(daily*days),`${days} paid day(s); use the wage applicable to your region and category`];}
   if(tool==='maternity'){const x=maternityEstimate(num(a),(num(b)||105) as 60|78|105|120);return ['Estimated SSS benefit',money(x.benefit),`Average daily salary credit: ${money(x.averageDailySalaryCredit)}`];}
   if(tool==='mp2')return ['Projected MP2 balance',money(mp2Projection(num(a),num(b)||5,(num(c)||6.5)/100)),`${b||5} year(s), using a hypothetical ${c||6.5}% annual dividend`];
   const x=employeeContributions(num(a),rates);return ['Employee deductions',money(x.total),`SSS ${money(x.sss)} · PhilHealth ${money(x.philHealth)} · Pag-IBIG ${money(x.pagIbig)}`];
- },[tool,a,b,c,rates]);
- if(!tool)return <ScrollView contentContainerStyle={s.scroll}><View style={s.header}><Pressable onPress={back} style={s.back}><Ionicons name="arrow-back" size={22}/></Pressable><View><Text style={s.title}>More calculators</Text><Text style={s.sub}>The original KalkulaPH essentials</Text></View></View>{tools.map(([key,title,sub,icon])=><Pressable key={key} style={s.card} onPress={()=>reset(key)}><View style={s.icon}><Ionicons name={icon} size={22} color="#444CE7"/></View><View style={{flex:1}}><Text style={s.cardTitle}>{title}</Text><Text style={s.cardSub}>{sub}</Text></View><Ionicons name="chevron-forward" size={20} color="#98A2B3"/></Pressable>)}</ScrollView>;
+ },[tool,a,b,c,d,rates]);
+ if(!tool)return <ScrollView contentContainerStyle={s.scroll}><View style={s.header}><Pressable onPress={back} style={s.back} accessibilityRole="button" accessibilityLabel="Back to home"><Ionicons name="arrow-back" size={22}/></Pressable><View style={{flex:1}}><Text style={s.title}>More calculators</Text><Text style={s.sub}>The original KalkulaPH essentials</Text></View></View>{tools.map(([key,title,sub,icon])=><Pressable key={key} style={s.card} onPress={()=>reset(key)} accessibilityRole="button" accessibilityLabel={`${title}. ${sub}`}><View style={s.icon}><Ionicons name={icon} size={22} color="#444CE7"/></View><View style={{flex:1}}><Text style={s.cardTitle}>{title}</Text><Text style={s.cardSub}>{sub}</Text></View><Ionicons name="chevron-forward" size={20} color="#98A2B3"/></Pressable>)}</ScrollView>;
  const meta=tools.find(x=>x[0]===tool)!;
- return <ScrollView contentContainerStyle={s.scroll}><View style={s.header}><Pressable onPress={()=>reset(null)} style={s.back}><Ionicons name="arrow-back" size={22}/></Pressable><View style={{flex:1}}><Text style={s.title}>{meta[1]}</Text><Text style={s.sub}>{meta[2]}</Text></View></View>
+ return <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled"><View style={s.header}><Pressable onPress={()=>reset(null)} style={s.back} accessibilityRole="button" accessibilityLabel="Back to calculator list"><Ionicons name="arrow-back" size={22}/></Pressable><View style={{flex:1}}><Text style={s.title}>{meta[1]}</Text><Text style={s.sub}>{meta[2]}</Text></View></View>
   {tool==='rates'&&<Input label="Monthly salary" value={a} setValue={setA}/>} 
-  {tool==='overtime'&&<><Input label="Monthly salary" value={a} setValue={setA}/><Input label="Overtime hours" value={b} setValue={setB}/></>}
-  {tool==='holiday'&&<><Input label="Monthly salary" value={a} setValue={setA}/><Input label="Days worked" value={b} setValue={setB}/><View style={s.toggle}>{[['holiday','Regular holiday'],['rest','Rest day']].map(x=><Pressable key={x[0]} onPress={()=>setC(x[0])} style={[s.toggleItem,(c||'holiday')===x[0]&&s.toggleActive]}><Text style={(c||'holiday')===x[0]?s.toggleTextActive:s.toggleText}>{x[1]}</Text></Pressable>)}</View></>}
-  {tool==='final'&&<><Input label="Monthly salary / unpaid salary" value={a} setValue={setA}/><Input label="Basic salary earned this year" value={b} setValue={setB}/><Input label="Convertible leave days" value={c} setValue={setC}/></>}
-  {tool==='minimum'&&<><Input label="Applicable daily wage" value={a} setValue={setA}/><Input label="Paid days per month" value={b} setValue={setB}/></>}
-  {tool==='maternity'&&<><Input label="Total of six highest MSCs" value={a} setValue={setA}/><Input label="Compensable days (60, 78, 105 or 120)" value={b} setValue={setB}/></>}
-  {tool==='mp2'&&<><Input label="Monthly contribution" value={a} setValue={setA}/><Input label="Years" value={b} setValue={setB}/><Input label="Assumed annual dividend %" value={c} setValue={setC}/></>}
+  {tool==='overtime'&&<><Input label="Monthly salary" value={a} setValue={setA}/><Input label="Overtime hours" value={b} setValue={setB} moneyField={false}/></>}
+  {tool==='holiday'&&<><Input label="Monthly salary" value={a} setValue={setA}/><Input label="Days worked" value={b} setValue={setB} moneyField={false}/><View style={s.toggle}>{[['holiday','Regular holiday'],['rest','Rest day']].map(x=><Pressable key={x[0]} onPress={()=>setC(x[0])} style={[s.toggleItem,(c||'holiday')===x[0]&&s.toggleActive]} accessibilityRole="button" accessibilityState={{selected:(c||'holiday')===x[0]}}><Text style={(c||'holiday')===x[0]?s.toggleTextActive:s.toggleText}>{x[1]}</Text></Pressable>)}</View></>}
+  {tool==='final'&&<><Input label="Unpaid salary" value={a} setValue={setA}/><Input label="Basic salary earned this year" value={b} setValue={setB}/><Input label="Convertible leave days" value={c} setValue={setC} moneyField={false}/><Input label="Monthly salary for leave conversion" value={d} setValue={setD}/></>}
+  {tool==='minimum'&&<><Input label="Applicable daily wage" value={a} setValue={setA}/><Input label="Paid days per month" value={b} setValue={setB} moneyField={false}/></>}
+  {tool==='maternity'&&<><Input label="Total of six highest MSCs" value={a} setValue={setA}/><Input label="Compensable days (60, 78, 105 or 120)" value={b} setValue={setB} moneyField={false}/></>}
+  {tool==='mp2'&&<><Input label="Monthly contribution" value={a} setValue={setA}/><Input label="Years" value={b} setValue={setB} moneyField={false}/><Input label="Assumed annual dividend %" value={c} setValue={setC} moneyField={false}/></>}
   {tool==='contributions'&&<Input label="Monthly compensation" value={a} setValue={setA}/>} 
   {output&&<Result label={output[0]} value={output[1]} detail={output[2]}/>}<Text style={s.note}>Estimate only. Actual pay depends on work schedule, employer policy, eligibility, official tables and rounding.</Text></ScrollView>
 }
