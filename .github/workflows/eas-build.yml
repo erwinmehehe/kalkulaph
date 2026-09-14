@@ -2,19 +2,69 @@ name: Build Android release
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/eas-build.yml
+
+permissions:
+  contents: read
+
+env:
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate release source
+        run: |
+          npm test
+          npm run typecheck
+          npm run validate:rates
+
+      - name: Verify Expo authorization
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "EXPO_TOKEN is not configured in GitHub Actions secrets."
+            exit 1
+          fi
+
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-      - run: eas build --platform android --profile production --non-interactive --no-wait
+
+      - name: Link EAS project when needed
+        run: |
+          if ! eas project:info >/dev/null 2>&1; then
+            ACCOUNT="$(eas whoami | tail -n 1 | xargs)"
+            echo "Linking KalkulaPH to Expo account: $ACCOUNT"
+            eas init --account "$ACCOUNT" --non-interactive
+          fi
+          eas config --platform android --profile production --json --non-interactive > eas-config.json
+
+      - name: Start signed production AAB build
+        run: eas build --platform android --profile production --non-interactive --no-wait --json > eas-build.json
+
+      - name: Upload EAS build metadata
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: kalkulaph-eas-release-metadata
+          path: |
+            eas-config.json
+            eas-build.json
+          if-no-files-found: ignore
+          retention-days: 14
