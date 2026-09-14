@@ -1,0 +1,32 @@
+name: Annual statutory-rate review
+
+on:
+  schedule:
+    - cron: '15 1 15 12 *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  review-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm run validate:rates
+      - name: Open next-year review issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NEXT_YEAR=$((10#$(date -u +%Y) + 1))
+          TITLE="KalkulaPH statutory rate review ${NEXT_YEAR}"
+          if gh issue list --state all --search "$TITLE in:title" --json title --jq '.[].title' | grep -Fqx "$TITLE"; then
+            echo "Review issue already exists"
+            exit 0
+          fi
+          gh issue create --title "$TITLE" --body "Verify SSS, PhilHealth, Pag-IBIG and BIR rules against official issuances. Update the versioned rate JSON, its verifiedOn date and regression tests. Require review before publishing."
