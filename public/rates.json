@@ -1,0 +1,34 @@
+{
+  "id": "PH-2026-09",
+  "version": "PH-2026-09",
+  "verifiedOn": "2026-09-14",
+  "effectiveOn": "2025-01-01",
+  "notes": "Contribution parameters re-verified for KalkulaPH on 2026-09-14 against current official SSS, PhilHealth and Pag-IBIG guidance. Complex tax and benefit formulas remain app-reviewed and are not remotely changed.",
+  "sss": {
+    "totalRate": 0.15,
+    "eeRate": 0.05,
+    "erRate": 0.10,
+    "employeeMscFloor": 5000,
+    "ofwMscFloor": 8000,
+    "kasambahayMscFloor": 1000,
+    "mscCeiling": 35000,
+    "regularSsCeiling": 20000,
+    "ecLow": 10,
+    "ecHigh": 30,
+    "ecHighThreshold": 15000
+  },
+  "philhealth": {
+    "totalRate": 0.05,
+    "eeRate": 0.025,
+    "erRate": 0.025,
+    "floor": 10000,
+    "ceiling": 100000
+  },
+  "pagibig": {
+    "eeRate": 0.02,
+    "eeRateLow": 0.01,
+    "erRate": 0.02,
+    "lowThreshold": 1500,
+    "maxCompensation": 10000
+  }
+}
