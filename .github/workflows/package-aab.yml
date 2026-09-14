@@ -12,7 +12,7 @@ permissions:
 
 env:
   EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-  EAS_BUILD_ID: 616b98a0-a7a1-4165-b10c-69a0c7680112
+  EAS_BUILD_ID: 6ebc00ea-0231-4652-b387-2f03f0a4339d
 
 jobs:
   package:
@@ -39,17 +39,17 @@ jobs:
           mkdir -p release
           eas build:list --platform android --profile production --limit 10 --json --non-interactive > eas-builds.json
           ARTIFACT_URL="$(node -e "const fs=require('fs'); const builds=JSON.parse(fs.readFileSync('eas-builds.json','utf8')); const b=builds.find(x=>x.id===process.env.EAS_BUILD_ID); if(!b || b.status!=='FINISHED' || !b.artifacts?.applicationArchiveUrl) process.exit(1); process.stdout.write(b.artifacts.applicationArchiveUrl);")"
-          curl --fail --location --retry 3 "$ARTIFACT_URL" --output release/KalkulaPH-3.0.0-build13.aab
-          test -s release/KalkulaPH-3.0.0-build13.aab
-          file release/KalkulaPH-3.0.0-build13.aab
-          sha256sum release/KalkulaPH-3.0.0-build13.aab > release/KalkulaPH-3.0.0-build13.sha256
+          curl --fail --location --retry 3 "$ARTIFACT_URL" --output release/KalkulaPH-3.0.0-build14.aab
+          test -s release/KalkulaPH-3.0.0-build14.aab
+          file release/KalkulaPH-3.0.0-build14.aab
+          sha256sum release/KalkulaPH-3.0.0-build14.aab > release/KalkulaPH-3.0.0-build14.sha256
 
       - name: Upload Play Store bundle
         uses: actions/upload-artifact@v4
         with:
-          name: KalkulaPH-3.0.0-build13-AAB
+          name: KalkulaPH-3.0.0-build14-AAB
           path: |
-            release/KalkulaPH-3.0.0-build13.aab
-            release/KalkulaPH-3.0.0-build13.sha256
+            release/KalkulaPH-3.0.0-build14.aab
+            release/KalkulaPH-3.0.0-build14.sha256
           if-no-files-found: error
           retention-days: 30
