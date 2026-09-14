@@ -25,7 +25,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - uses: actions/setup-java@v5
@@ -45,14 +45,14 @@ jobs:
       - name: Generate Android project
         run: npx expo prebuild --platform android --non-interactive
 
-      - name: Build debug APK
+      - name: Build standalone release APK
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
           name: kalkulaph-preview-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 14
