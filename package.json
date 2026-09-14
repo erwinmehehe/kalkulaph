@@ -9,8 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts",
-    "validate:rates": "tsx scripts/validate-rates.ts"
+    "test": "node --import tsx --test tests/*.test.ts",
+    "validate:rates": "node --import tsx scripts/validate-rates.ts"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -19,8 +19,10 @@
     "expo-constants": "~18.0.10",
     "expo-status-bar": "~3.0.8",
     "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-native": "0.81.5",
-    "react-native-safe-area-context": "~5.6.0"
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-web": "^0.21.0"
   },
   "devDependencies": {
     "@types/react": "~19.1.10",
