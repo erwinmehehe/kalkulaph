@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
-import bundled from '../data/rates-2025.json';
+import bundled from '../data/rates-2026.json';
 import type { RateConfig } from '../types';
 
 const CACHE_KEY = 'kalkulaph.rates.v1';
@@ -22,7 +22,7 @@ export async function loadRates(): Promise<RateConfig> {
 export async function refreshRates(force = false): Promise<{ rates: RateConfig; updated: boolean; message: string }> {
   const current = await loadRates();
   const url = Constants.expoConfig?.extra?.ratesUrl as string | undefined;
-  if (!url) return { rates: current, updated: false, message: 'Using verified bundled rates. Add EXPO_PUBLIC_RATES_URL for remote updates.' };
+  if (!url) return { rates: current, updated: false, message: 'Using verified bundled rates.' };
   const last = Number(await AsyncStorage.getItem(CHECK_KEY) || 0);
   if (!force && Date.now() - last < 86400000) return { rates: current, updated: false, message: 'Rates checked within the last 24 hours.' };
   try {
