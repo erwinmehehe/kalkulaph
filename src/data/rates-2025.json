@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "effectiveYear": 2025,
+  "verifiedOn": "2026-09-14",
+  "sss": { "minMsc": 5000, "maxMsc": 35000, "step": 500, "employeeRate": 0.05, "totalRate": 0.15 },
+  "philHealth": { "rate": 0.05, "minSalary": 10000, "maxSalary": 100000, "employeeShare": 0.5 },
+  "pagIbig": { "employeeRateLow": 0.01, "employeeRate": 0.02, "employerRate": 0.02, "threshold": 1500, "maxFundSalary": 10000 },
+  "tax": { "annualBrackets": [
+    { "over": 0, "base": 0, "rate": 0 },
+    { "over": 250000, "base": 0, "rate": 0.15 },
+    { "over": 400000, "base": 22500, "rate": 0.20 },
+    { "over": 800000, "base": 102500, "rate": 0.25 },
+    { "over": 2000000, "base": 402500, "rate": 0.30 },
+    { "over": 8000000, "base": 2202500, "rate": 0.35 }
+  ]},
+  "freelancer": { "eightPercentExemption": 250000, "percentageTaxRate": 0.03 },
+  "deMinimis": {
+    "riceMonthly": 2500,
+    "uniformAnnual": 8000,
+    "laundryMonthly": 400,
+    "medicalDependentsSemester": 2000,
+    "medicalAnnual": 12000,
+    "achievementAnnual": 12000,
+    "giftsAnnual": 6000,
+    "cbaAnnual": 10000
+  },
+  "sources": [
+    "https://www.sss.gov.ph/sss-contribution-table/",
+    "https://www.philhealth.gov.ph/circulars/2024/PC2024-0001.pdf",
+    "https://www.pagibigfund.gov.ph/document/pdf/circulars/provident/HDMF%20Circular%20No.%20460.pdf",
+    "https://www.bir.gov.ph/index.php/tax-information/withholding-tax.html"
+  ]
+}
