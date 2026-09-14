@@ -1,6 +1,6 @@
 name: Build Android release
 
-# Release trigger: 2026-09-14
+# Release trigger: 2026-09-14 policy-safe rebuild
 on:
   workflow_dispatch:
   push:
