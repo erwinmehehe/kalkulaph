@@ -33,6 +33,13 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Link existing Expo project
+        run: |
+          if ! eas project:info >/dev/null 2>&1; then
+            eas init --account erwinvalles --non-interactive
+          fi
+          node -e "const a=require('./app.json'); console.log('EAS project ID:', a.expo?.extra?.eas?.projectId ?? 'missing');"
+
       - name: Show latest Android production build
         run: |
           eas build:list --platform android --profile production --limit 1 --json --non-interactive > eas-latest-build.json
