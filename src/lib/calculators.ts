@@ -22,7 +22,7 @@ export function employeeContributions(monthlyGross: number, rates: RateConfig, p
   return { sss, philHealth, pagIbig, total: sss + philHealth + pagIbig };
 }
 
-export function netPay(monthlyGross: number, rates: RateConfig, nonTaxableMonthly = 0, philHealthBasicSalary = monthlyGross) {
+export function netPay(monthlyGross: number, rates: RateConfig, nonTaxableMonthly = 0, philHealthBasicSalary = Math.max(0, monthlyGross - nonTaxableMonthly)) {
   const contributions = employeeContributions(monthlyGross, rates, philHealthBasicSalary);
   const taxableMonthly = Math.max(0, monthlyGross - contributions.total - nonTaxableMonthly);
   const tax = annualTax(taxableMonthly * 12, rates) / 12;
