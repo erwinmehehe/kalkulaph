@@ -1,5 +1,6 @@
 name: Build Android release
 
+# Release trigger: 2026-09-14
 on:
   workflow_dispatch:
   push:
