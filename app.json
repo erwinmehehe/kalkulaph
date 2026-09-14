@@ -2,6 +2,7 @@
   "expo": {
     "name": "KalkulaPH",
     "slug": "kalkulaph",
+    "owner": "erwinvalles",
     "version": "3.0.0",
     "icon": "./assets/icon.png",
     "orientation": "portrait",
@@ -25,7 +26,10 @@
       "buildNumber": "12"
     },
     "extra": {
-      "ratesUrl": "https://raw.githubusercontent.com/erwinmehehe/kalkulaph/main/src/data/rates-2026.json"
+      "ratesUrl": "https://raw.githubusercontent.com/erwinmehehe/kalkulaph/main/src/data/rates-2026.json",
+      "eas": {
+        "projectId": "39e2945e-2011-443a-ac11-2342cf02fa12"
+      }
     },
     "plugins": [
       [
