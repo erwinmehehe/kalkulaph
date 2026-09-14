@@ -37,12 +37,12 @@ jobs:
       - name: Download signed production AAB
         run: |
           mkdir -p release
-          cd release
-          eas build:download --build-id "$EAS_BUILD_ID" --non-interactive
-          AAB="$(find . -maxdepth 2 -type f -name '*.aab' | head -n 1)"
-          test -n "$AAB"
-          mv "$AAB" KalkulaPH-3.0.0-build13.aab
-          sha256sum KalkulaPH-3.0.0-build13.aab > KalkulaPH-3.0.0-build13.sha256
+          eas build:list --platform android --profile production --limit 10 --json --non-interactive > eas-builds.json
+          ARTIFACT_URL="$(node -e "const fs=require('fs'); const builds=JSON.parse(fs.readFileSync('eas-builds.json','utf8')); const b=builds.find(x=>x.id===process.env.EAS_BUILD_ID); if(!b || b.status!=='FINISHED' || !b.artifacts?.applicationArchiveUrl) process.exit(1); process.stdout.write(b.artifacts.applicationArchiveUrl);")"
+          curl --fail --location --retry 3 "$ARTIFACT_URL" --output release/KalkulaPH-3.0.0-build13.aab
+          test -s release/KalkulaPH-3.0.0-build13.aab
+          file release/KalkulaPH-3.0.0-build13.aab
+          sha256sum release/KalkulaPH-3.0.0-build13.aab > release/KalkulaPH-3.0.0-build13.sha256
 
       - name: Upload Play Store bundle
         uses: actions/upload-artifact@v4
