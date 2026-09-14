@@ -8,8 +8,8 @@
 - [x] EAS production App Bundle profile
 - [x] App icon, adaptive icon, splash and feature graphic
 - [x] Automated calculator tests and TypeScript validation
-- [ ] Expo account linked and `extra.eas.projectId` added automatically
-- [ ] Signed production `.aab` generated
+- [x] Expo account linked and `extra.eas.projectId` persisted
+- [x] Signed production `.aab` generated (`3.0.0`, build `13`, EAS build `616b98a0-a7a1-4165-b10c-69a0c7680112`)
 - [ ] Play Console pre-launch report reviewed
 
 ## Device QA
