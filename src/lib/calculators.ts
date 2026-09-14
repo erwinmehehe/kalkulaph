@@ -14,7 +14,7 @@ export function employeeContributions(monthlyGross: number, rates: RateConfig, p
   const gross = Math.max(0, monthlyGross);
   const msc = clamp(Math.round(gross / rates.sss.step) * rates.sss.step, rates.sss.minMsc, rates.sss.maxMsc);
   const sss = gross ? msc * rates.sss.employeeRate : 0;
-  const basicSalary = clamp(philHealthBasicSalary, 0, gross || Math.max(0, philHealthBasicSalary));
+  const basicSalary = gross ? clamp(philHealthBasicSalary, 0, gross) : 0;
   const philHealthBase = basicSalary ? clamp(basicSalary, rates.philHealth.minSalary, rates.philHealth.maxSalary) : 0;
   const philHealth = philHealthBase * rates.philHealth.rate * rates.philHealth.employeeShare;
   const pagIbigBase = Math.min(gross, rates.pagIbig.maxFundSalary);
