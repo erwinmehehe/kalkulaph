@@ -1,0 +1,44 @@
+name: KalkulaPH UI preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/web-preview.yml
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Export current app for web
+        run: npx expo export --platform web
+      - name: Capture actual current UI
+        run: |
+          python3 -m http.server 4173 --directory dist >/tmp/kalkulaph-web.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 1
+          done
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          "$BROWSER" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=390,844 --screenshot=kalkulaph-home-preview.png http://127.0.0.1:4173/
+          test -s kalkulaph-home-preview.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kalkulaph-ui-preview
+          path: kalkulaph-home-preview.png
+          if-no-files-found: error
+          retention-days: 30
