@@ -49,6 +49,22 @@ jobs:
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon
 
+      - name: Verify no Advertising ID permission
+        run: |
+          APK="android/app/build/outputs/apk/release/app-release.apk"
+          unzip -p "$APK" AndroidManifest.xml > /tmp/AndroidManifest.xml.bin
+          if strings -el /tmp/AndroidManifest.xml.bin | grep -Fq 'com.google.android.gms.permission.AD_ID'; then
+            echo 'Advertising ID permission detected in release APK.'
+            exit 1
+          fi
+          for DEX in $(unzip -Z1 "$APK" | grep '^classes.*\.dex$'); do
+            if unzip -p "$APK" "$DEX" | strings | grep -Eq 'AdvertisingIdClient|com/google/android/gms/ads|firebase\.analytics|appsflyer|adjust\.sdk'; then
+              echo "Advertising or attribution SDK signature detected in $DEX."
+              exit 1
+            fi
+          done
+          echo 'No Advertising ID permission or common ad/attribution SDK signature detected.'
+
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
