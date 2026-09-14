@@ -1,0 +1,74 @@
+name: Android smoke QA
+
+on:
+  workflow_run:
+    workflows: ["Android preview APK"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download preview APK
+        if: ${{ github.event_name == 'workflow_run' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: kalkulaph-preview-apk
+          path: apk
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Launch on narrow Android emulator
+        if: ${{ github.event_name == 'workflow_run' }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            set -e
+            adb install -r apk/app-debug.apk
+            adb shell wm size 720x1600
+            adb shell wm density 320
+            adb logcat -c
+            adb shell am force-stop ph.kalkula.app
+            adb shell am start -W -n ph.kalkula.app/.MainActivity
+            sleep 5
+            test -n "$(adb shell pidof ph.kalkula.app | tr -d '\r')"
+            adb exec-out screencap -p > home-360dp.png
+            adb shell settings put system font_scale 1.3
+            adb shell am force-stop ph.kalkula.app
+            adb shell am start -W -n ph.kalkula.app/.MainActivity
+            sleep 4
+            test -n "$(adb shell pidof ph.kalkula.app | tr -d '\r')"
+            adb exec-out screencap -p > home-360dp-font130.png
+            adb shell uiautomator dump /sdcard/kalkulaph-window.xml
+            adb pull /sdcard/kalkulaph-window.xml window.xml
+            adb logcat -d > android-logcat.txt
+            if grep -E "FATAL EXCEPTION|AndroidRuntime: FATAL" android-logcat.txt; then
+              echo "Android crash detected"
+              exit 1
+            fi
+
+      - name: Upload visual QA evidence
+        if: ${{ always() && github.event_name == 'workflow_run' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: kalkulaph-android-smoke-qa
+          path: |
+            home-360dp.png
+            home-360dp-font130.png
+            window.xml
+            android-logcat.txt
+          if-no-files-found: warn
+          retention-days: 14
