@@ -18,6 +18,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable KVM acceleration
+        run: |
+          if [ -e /dev/kvm ]; then
+            sudo chmod 666 /dev/kvm
+            ls -l /dev/kvm
+          else
+            echo "/dev/kvm is unavailable on this runner"
+          fi
+
       - name: Download validated preview APK
         uses: actions/download-artifact@v4
         with:
