@@ -1,0 +1,48 @@
+name: Submit Android to Play Internal
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/eas-submit-internal.yml
+
+permissions:
+  contents: read
+
+env:
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+  EAS_BUILD_ID: 616b98a0-a7a1-4165-b10c-69a0c7680112
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate app before submission
+        run: |
+          npm test
+          npm run typecheck
+          npm run validate:rates
+
+      - name: Verify Expo authorization
+        run: |
+          test -n "$EXPO_TOKEN" || { echo "EXPO_TOKEN is missing"; exit 1; }
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Submit build 13 to Google Play internal draft
+        run: eas submit --platform android --profile production --id "$EAS_BUILD_ID" --non-interactive --wait
