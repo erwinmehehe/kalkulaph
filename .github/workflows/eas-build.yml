@@ -50,9 +50,8 @@ jobs:
       - name: Link EAS project when needed
         run: |
           if ! eas project:info >/dev/null 2>&1; then
-            ACCOUNT="$(eas whoami | tail -n 1 | xargs)"
-            echo "Linking KalkulaPH to Expo account: $ACCOUNT"
-            eas init --account "$ACCOUNT" --non-interactive
+            echo "Linking KalkulaPH to Expo account: erwinvalles"
+            eas init --account erwinvalles --non-interactive
           fi
           eas config --platform android --profile production --json --non-interactive > eas-config.json
 
