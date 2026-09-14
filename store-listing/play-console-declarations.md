@@ -1,6 +1,6 @@
 # KalkulaPH Play Console declaration draft
 
-Prepared for KalkulaPH 3.0.0 (Android package `ph.kalkula.app`). Confirm the final choices against the App Bundle Explorer and the exact Play Console wording before submission.
+Prepared for KalkulaPH Android package `ph.kalkula.app`. Confirm the final choices against the exact Play Console wording and the fresh release bundle before submission.
 
 ## App content
 
@@ -17,31 +17,35 @@ KalkulaPH does not include an advertising SDK or display ads.
 
 ### App access
 
-**Is all functionality available without special access?** Yes.
+**Is any part of the app restricted?** No.
 
-No account, login, membership, invite code, employer account, or reviewer credential is required.
+No account, login, membership, invite code, employer account, reviewer credential, payment, OTP, biometric gate or special access is required.
 
 ### Target audience and content
 
 Recommended target audience: **18 and over**.
 
-The app is designed for employees, freelancers, self-employed workers, and adults estimating Philippine pay, statutory contributions, taxes, benefits, and retirement readiness. It is not designed for children.
+The app is designed for employees, freelancers, self-employed workers, and adults estimating Philippine pay, statutory contributions, taxes, benefits, pensions and retirement projections. It is not designed for children.
 
 ### Financial features
 
-Recommended declaration: **Other**.
+Recommended declaration for the policy-safe calculator build: **My app doesn't provide any financial features**.
 
-Description for review:
+Rationale: KalkulaPH performs user-directed calculations and displays numeric estimates only. It does not provide banking, lending, payments, money transfer, insurance, securities or cryptocurrency services, portfolio management, credit monitoring, or personalized financial advice. The retirement tool no longer assigns readiness scores, recommendations, or labels such as "On track" or "Needs attention."
 
-> KalkulaPH is an informational calculator for Philippine salary, withholding tax, statutory SSS/PhilHealth/Pag-IBIG contributions, benefits, 13th-month pay, freelancer estimates, pension projection, and retirement-readiness estimates. It does not provide loans, banking, payment processing, money transfer, insurance, securities or cryptocurrency trading, investment management, or personalized financial advice. Results are estimates and users are directed to official government sources for authoritative rules.
-
-Using **Other** is intentionally conservative because the app contains salary, tax, pension, and retirement-related calculations even though it does not provide regulated financial products or personalized financial advice.
+If Play review interprets calculator-only functionality differently, use the review feedback to amend the declaration rather than adding advice or regulated financial-service behavior to the app.
 
 ### Government apps
 
-**Is this an official government app?** No.
+**Is this app developed by or on behalf of a government?** No.
 
-KalkulaPH must remain clearly described as an independent calculator and not an official SSS, PhilHealth, Pag-IBIG, BIR, or Philippine government application.
+KalkulaPH must remain clearly described as an independent calculator and not an official SSS, PhilHealth, Pag-IBIG, BIR, DOLE, NWPC, or Philippine government application.
+
+### Health apps
+
+Recommended declaration for the policy-safe calculator build: **My app doesn't provide any health features**.
+
+The previous PhilHealth coverage lookup and medical-package guide were removed. The remaining PhilHealth functionality is limited to estimating the statutory payroll contribution in the net-pay calculator; the app does not provide medical information, diagnosis, treatment guidance, health tracking, patient management, health-insurance navigation, or medical decision support.
 
 ### Permissions
 
@@ -74,16 +78,15 @@ Before submitting Data safety, compare this declaration with Google Play App Bun
 
 ## Release path
 
-1. Upload build 13 to **Internal testing** first.
-2. Review automated Play checks and the pre-launch report.
-3. Complete the store listing and all App content declarations.
-4. If the developer account is a personal account created after November 13, 2023, run the required closed test with at least 12 continuously opted-in testers for at least 14 days before applying for production access.
-5. Promote only after QA and policy checks are clear.
+1. Build a fresh signed production App Bundle after the policy-safe feature cleanup.
+2. Upload the fresh bundle to **Internal testing** first.
+3. Review automated Play checks and the pre-launch report.
+4. Complete the store listing and all App content declarations using the fresh build's actual behavior.
+5. Run the required closed test with at least 12 continuously opted-in testers for at least 14 days before applying for production access, as shown by this Play developer account.
+6. Promote only after QA and policy checks are clear.
 
-## Build being submitted
+## Build requirements
 
-- App version: `3.0.0`
-- Android build/version code: `13`
 - Package: `ph.kalkula.app`
-- EAS build ID: `616b98a0-a7a1-4165-b10c-69a0c7680112`
 - Target API: `36`
+- Do not submit the previous build 13 because it contains the removed readiness-score and PhilHealth coverage-guide functionality.
