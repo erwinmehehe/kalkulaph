@@ -4,35 +4,50 @@
 KalkulaPH: Salary Calculator
 
 ## Short description
-Calculate Philippine salary, tax, contributions, benefits and retirement.
+Philippines salary calculator for tax, SSS, PhilHealth, Pag-IBIG & net pay.
 
 ## Full description
-KalkulaPH helps Filipino employees and freelancers understand their money with fast, private and easy-to-read estimates.
+KalkulaPH is a Philippine salary calculator built for employees and freelancers who want a clearer estimate of take-home pay, taxes and government contributions.
 
-Calculate your monthly take-home pay with estimated SSS, PhilHealth, Pag-IBIG and withholding tax deductions in one place. Explore standalone calculators for overtime, holiday pay, daily and hourly rates, final pay, 13th-month pay, de minimis benefits, SSS maternity benefits and MP2 savings.
+Use one simple net pay calculator to estimate your monthly salary after SSS, PhilHealth, Pag-IBIG and withholding tax. KalkulaPH also includes practical payroll and income tools for common Philippine work situations.
 
-Freelancers can compare the 8% income-tax option with graduated rates and estimate how much to set aside. Employees can privately track multiple jobs, estimate an SSS pension and run a neutral retirement projection using fixed assumptions.
+Calculate and estimate:
 
-Key features:
+- Monthly net pay and take-home salary
+- SSS contribution
+- PhilHealth contribution
+- Pag-IBIG contribution
+- Philippine withholding tax
+- Freelancer income tax using the 8% option or graduated rates
+- 13th-month pay
+- De minimis benefits and taxable excess
+- Overtime and holiday pay
+- Daily and hourly rates
+- Final pay and other wage calculations
+- SSS maternity benefit estimates
+- MP2 savings estimates
 
-- All-in-one Philippine net-pay calculator
-- SSS, PhilHealth and Pag-IBIG contribution estimates
-- Withholding and freelancer tax estimates
-- 13th-month and de minimis benefits calculator
-- Overtime, holiday, final-pay and wage tools
-- SSS maternity and pension estimates
-- MP2 calculator and retirement projection
-- Private job history stored on your device
-- Verified rate-table updates with offline fallback
+KalkulaPH is designed to make Philippine salary and tax calculations easier to understand. Results are shown in a clear breakdown so you can see where deductions go and how much you may take home.
+
+For freelancers and self-employed workers, compare common Philippine income-tax methods and estimate how much tax to set aside. Employees can also keep a private job history on their device.
+
+Why use KalkulaPH?
+
+- Built specifically for Philippine salary and tax calculations
+- SSS, PhilHealth and Pag-IBIG estimates in one place
+- Useful tools for employees and freelancers
+- Private job history stored locally on your device
+- Works with verified rate tables and offline fallback
 - No account required
+- Fast, simple and easy to read
 
-KalkulaPH is an independent educational calculator. It is not affiliated with or endorsed by SSS, PhilHealth, Pag-IBIG Fund, BIR, DOLE or NWPC. Results are estimates. KalkulaPH does not provide financial, investment, medical or legal advice. Confirm final amounts, eligibility and legal or tax treatment with the relevant agency, your employer or a qualified professional.
+KalkulaPH is an independent educational calculator. It is not affiliated with or endorsed by SSS, PhilHealth, Pag-IBIG Fund, BIR, DOLE or NWPC. Results are estimates only and may not reflect every payroll, tax or eligibility situation. Confirm final amounts and rules with the relevant government agency, your employer or a qualified professional.
 
 ## Category
 Finance
 
 ## Suggested tags
-Budgeting and expense tracking; Personal finance; Calculator
+Personal finance; Calculator; Finance; Business; Productivity
 
 ## Support
 - Developer: Erwin Valles
