@@ -1,0 +1,55 @@
+name: Package production AAB
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/package-aab.yml
+
+permissions:
+  contents: read
+
+env:
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+  EAS_BUILD_ID: 616b98a0-a7a1-4165-b10c-69a0c7680112
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Download signed production AAB
+        run: |
+          mkdir -p release
+          cd release
+          eas build:download --build-id "$EAS_BUILD_ID" --non-interactive
+          AAB="$(find . -maxdepth 2 -type f -name '*.aab' | head -n 1)"
+          test -n "$AAB"
+          mv "$AAB" KalkulaPH-3.0.0-build13.aab
+          sha256sum KalkulaPH-3.0.0-build13.aab > KalkulaPH-3.0.0-build13.sha256
+
+      - name: Upload Play Store bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: KalkulaPH-3.0.0-build13-AAB
+          path: |
+            release/KalkulaPH-3.0.0-build13.aab
+            release/KalkulaPH-3.0.0-build13.sha256
+          if-no-files-found: error
+          retention-days: 30
