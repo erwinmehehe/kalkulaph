@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "PH-2026-09",
+  "verifiedOn": "2026-09-14",
+  "effectiveFrom": "2026-01",
+  "sss": {
+    "totalRate": 0.15,
+    "eeRate": 0.05,
+    "erRate": 0.10,
+    "employeeMscFloor": 5000,
+    "ofwMscFloor": 8000,
+    "kasambahayMscFloor": 1000,
+    "mscCeiling": 35000,
+    "regularSsCeiling": 20000
+  },
+  "philhealth": {
+    "totalRate": 0.05,
+    "eeRate": 0.025,
+    "erRate": 0.025,
+    "floor": 10000,
+    "ceiling": 100000
+  },
+  "pagibig": {
+    "eeRate": 0.02,
+    "eeRateLow": 0.01,
+    "erRate": 0.02,
+    "lowThreshold": 1500,
+    "maxCompensation": 10000
+  },
+  "bir": {
+    "monthlyBrackets": [
+      { "lower": 0, "upper": 20833, "base": 0, "rate": 0 },
+      { "lower": 20833, "upper": 33332, "base": 0, "rate": 0.15 },
+      { "lower": 33333, "upper": 66666, "base": 1875, "rate": 0.20 },
+      { "lower": 66667, "upper": 166666, "base": 8541.80, "rate": 0.25 },
+      { "lower": 166667, "upper": 666666, "base": 33541.80, "rate": 0.30 },
+      { "lower": 666667, "upper": null, "base": 183541.80, "rate": 0.35 }
+    ]
+  },
+  "notes": "Verified statutory calculator rate manifest for KalkulaPH. Update this file after checking official SSS, PhilHealth, Pag-IBIG and BIR publications; compatible app builds can refresh without a new store release."
+}
