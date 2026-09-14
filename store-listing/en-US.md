@@ -36,6 +36,5 @@ Budgeting and expense tracking; Personal finance; Calculator
 
 ## Support
 - Developer: Erwin Valles
-- Support page: https://erwinmehehe.github.io/kalkulaph/support.html
-- Privacy policy: https://erwinmehehe.github.io/kalkulaph/privacy.html
-
+- Support page: https://github.com/erwinmehehe/kalkulaph/blob/main/SUPPORT.md
+- Privacy policy: https://github.com/erwinmehehe/kalkulaph/blob/main/PRIVACY.md
