@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import rates from '../src/data/rates-2025.json';
+import { annualTax, employeeContributions, freelancerTax, netPay, pensionEstimate, retirementProjection, thirteenthMonthAndBenefits } from '../src/lib/calculators';
+const r = rates as any;
+test('annual TRAIN tax brackets',()=>{assert.equal(annualTax(250000,r),0);assert.equal(annualTax(400000,r),22500);assert.equal(annualTax(800000,r),102500)});
+test('contributions respect caps',()=>{const x=employeeContributions(200000,r);assert.equal(x.sss,1750);assert.equal(x.philHealth,2500);assert.equal(x.pagIbig,200)});
+test('net pay never exceeds gross',()=>{const x=netPay(50000,r);assert.ok(x.net>0&&x.net<50000)});
+test('8 percent freelancer exemption',()=>{assert.equal(freelancerTax(250000,0,'eightPercent',r).incomeTax,0);assert.equal(freelancerTax(500000,0,'eightPercent',r).incomeTax,20000)});
+test('13th month is one twelfth basic earned',()=>{assert.equal(thirteenthMonthAndBenefits(600000,{},r).thirteenthMonth,50000)});
+test('pension needs ten credited years',()=>{assert.equal(pensionEstimate(20000,9),0);assert.ok(pensionEstimate(20000,20)>0)});
+test('retirement score bounded',()=>{const x=retirementProjection({age:30,retirementAge:60,currentSavings:100000,monthlySavings:10000,desiredMonthlyIncome:30000,expectedReturn:6,inflation:3});assert.ok(x.score>=0&&x.score<=100)});
