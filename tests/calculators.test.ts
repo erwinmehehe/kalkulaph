@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import rates from '../src/data/rates-2025.json';
-import { annualTax, employeeContributions, freelancerTax, netPay, pensionEstimate, retirementProjection, thirteenthMonthAndBenefits } from '../src/lib/calculators';
+import { annualTax, employeeContributions, finalPayEstimate, freelancerTax, holidayPay, maternityEstimate, mp2Projection, netPay, overtimePay, pensionEstimate, rateConversions, retirementProjection, thirteenthMonthAndBenefits } from '../src/lib/calculators';
 const r = rates as any;
 test('annual TRAIN tax brackets',()=>{assert.equal(annualTax(250000,r),0);assert.equal(annualTax(400000,r),22500);assert.equal(annualTax(800000,r),102500)});
 test('contributions respect caps',()=>{const x=employeeContributions(200000,r);assert.equal(x.sss,1750);assert.equal(x.philHealth,2500);assert.equal(x.pagIbig,200)});
@@ -10,3 +10,8 @@ test('8 percent freelancer exemption',()=>{assert.equal(freelancerTax(250000,0,'
 test('13th month is one twelfth basic earned',()=>{assert.equal(thirteenthMonthAndBenefits(600000,{},r).thirteenthMonth,50000)});
 test('pension needs ten credited years',()=>{assert.equal(pensionEstimate(20000,9),0);assert.ok(pensionEstimate(20000,20)>0)});
 test('retirement score bounded',()=>{const x=retirementProjection({age:30,retirementAge:60,currentSavings:100000,monthlySavings:10000,desiredMonthlyIncome:30000,expectedReturn:6,inflation:3});assert.ok(x.score>=0&&x.score<=100)});
+test('monthly rate conversion is internally consistent',()=>{const x=rateConversions(30000);assert.equal(x.hourly,x.daily/8);assert.ok(x.daily>0)});
+test('overtime and holiday pay use explicit multipliers',()=>{assert.ok(overtimePay(30000,2)>rateConversions(30000).hourly*2);assert.equal(holidayPay(30000,1,2),rateConversions(30000).daily*2)});
+test('final pay itemizes prorated components',()=>{const x=finalPayEstimate(15000,120000,5,30000);assert.equal(x.proratedThirteenth,10000);assert.ok(x.total>25000)});
+test('MP2 projection includes deposits and dividends',()=>{assert.ok(mp2Projection(1000,5)>60000)});
+test('maternity benefit derives ADSC from six MSCs',()=>{const x=maternityEstimate(120000,105);assert.equal(x.averageDailySalaryCredit,120000/180);assert.equal(x.benefit,x.averageDailySalaryCredit*105)});
