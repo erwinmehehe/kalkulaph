@@ -1,0 +1,46 @@
+name: Check Android release status
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/eas-status.yml
+
+permissions:
+  contents: read
+
+env:
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Show latest Android production build
+        run: |
+          eas build:list --platform android --profile production --limit 1 --json --non-interactive > eas-latest-build.json
+          node -e "const fs=require('fs'); const b=JSON.parse(fs.readFileSync('eas-latest-build.json','utf8'))[0]; if(!b){console.log('No Android production build found'); process.exit(1)}; console.log(JSON.stringify({id:b.id,status:b.status,platform:b.platform,createdAt:b.createdAt,updatedAt:b.updatedAt,appVersion:b.appVersion,appBuildVersion:b.appBuildVersion,artifactUrl:b.artifacts?.applicationArchiveUrl ?? null},null,2));"
+
+      - name: Upload latest build metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: kalkulaph-latest-eas-build
+          path: eas-latest-build.json
+          retention-days: 14
