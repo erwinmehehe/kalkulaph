@@ -10,19 +10,20 @@ export function annualTax(taxable: number, rates: RateConfig) {
   return Math.max(0, selected.base + (taxable - selected.over) * selected.rate);
 }
 
-export function employeeContributions(monthlyGross: number, rates: RateConfig) {
+export function employeeContributions(monthlyGross: number, rates: RateConfig, philHealthBasicSalary = monthlyGross) {
   const gross = Math.max(0, monthlyGross);
   const msc = clamp(Math.round(gross / rates.sss.step) * rates.sss.step, rates.sss.minMsc, rates.sss.maxMsc);
   const sss = gross ? msc * rates.sss.employeeRate : 0;
-  const philHealthBase = gross ? clamp(gross, rates.philHealth.minSalary, rates.philHealth.maxSalary) : 0;
+  const basicSalary = clamp(philHealthBasicSalary, 0, gross || Math.max(0, philHealthBasicSalary));
+  const philHealthBase = basicSalary ? clamp(basicSalary, rates.philHealth.minSalary, rates.philHealth.maxSalary) : 0;
   const philHealth = philHealthBase * rates.philHealth.rate * rates.philHealth.employeeShare;
   const pagIbigBase = Math.min(gross, rates.pagIbig.maxFundSalary);
   const pagIbig = pagIbigBase * (gross <= rates.pagIbig.threshold ? rates.pagIbig.employeeRateLow : rates.pagIbig.employeeRate);
   return { sss, philHealth, pagIbig, total: sss + philHealth + pagIbig };
 }
 
-export function netPay(monthlyGross: number, rates: RateConfig, nonTaxableMonthly = 0) {
-  const contributions = employeeContributions(monthlyGross, rates);
+export function netPay(monthlyGross: number, rates: RateConfig, nonTaxableMonthly = 0, philHealthBasicSalary = monthlyGross) {
+  const contributions = employeeContributions(monthlyGross, rates, philHealthBasicSalary);
   const taxableMonthly = Math.max(0, monthlyGross - contributions.total - nonTaxableMonthly);
   const tax = annualTax(taxableMonthly * 12, rates) / 12;
   return { gross: monthlyGross, contributions, tax, nonTaxableMonthly, net: Math.max(0, monthlyGross - contributions.total - tax) };
