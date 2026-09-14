@@ -10,5 +10,12 @@
     "target": "ES2022",
     "module": "ESNext"
   },
-  "include": ["App.tsx", "src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "scripts/**/*.ts"]
+  "include": [
+    "App.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "scripts/**/*.ts"
+  ],
+  "extends": "expo/tsconfig.base"
 }
