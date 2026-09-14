@@ -66,3 +66,34 @@ export function retirementProjection(input: RetirementInput) {
   const score = Math.round(clamp(funded * 100, 0, 100));
   return { projected, target, funded, score, desiredAtRetirement };
 }
+
+export function rateConversions(monthly: number, workdays = 261) {
+  const daily = Math.max(0, monthly) * 12 / Math.max(1, workdays);
+  return { daily, hourly: daily / 8 };
+}
+
+export function overtimePay(monthly: number, hours: number, multiplier = 1.25) {
+  return rateConversions(monthly).hourly * Math.max(0, hours) * Math.max(0, multiplier);
+}
+
+export function holidayPay(monthly: number, days: number, multiplier: 2 | 1.3) {
+  return rateConversions(monthly).daily * Math.max(0, days) * multiplier;
+}
+
+export function finalPayEstimate(unpaidSalary: number, basicEarned: number, leaveDays: number, monthly: number, other = 0) {
+  const proratedThirteenth = Math.max(0, basicEarned) / 12;
+  const leaveConversion = rateConversions(monthly).daily * Math.max(0, leaveDays);
+  return { proratedThirteenth, leaveConversion, total: Math.max(0, unpaidSalary) + proratedThirteenth + leaveConversion + Math.max(0, other) };
+}
+
+export function mp2Projection(monthly: number, years: number, annualDividend = 0.065, initial = 0) {
+  const months = Math.max(0, years) * 12;
+  const monthlyRate = Math.max(0, annualDividend) / 12;
+  const deposits = monthlyRate ? Math.max(0, monthly) * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) : Math.max(0, monthly) * months;
+  return Math.max(0, initial) * Math.pow(1 + monthlyRate, months) + deposits;
+}
+
+export function maternityEstimate(topSixMscTotal: number, days: 60 | 78 | 105 | 120) {
+  const averageDailySalaryCredit = Math.max(0, topSixMscTotal) / 180;
+  return { averageDailySalaryCredit, benefit: averageDailySalaryCredit * days };
+}
