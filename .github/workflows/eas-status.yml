@@ -51,3 +51,5 @@ jobs:
           name: kalkulaph-latest-eas-build
           path: eas-latest-build.json
           retention-days: 14
+
+# Status check trigger: 2026-09-14
